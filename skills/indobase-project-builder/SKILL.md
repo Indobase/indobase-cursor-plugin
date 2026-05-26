@@ -5,55 +5,43 @@ description: Use when the user wants to connect Cursor to Indobase, create an In
 
 # Indobase project builder
 
-Use Indobase in two layers:
+Use Indobase through the hosted MCP server first.
 
-1. **Platform HTTP API** for account, organization, and project lifecycle work.
-2. **Indobase MCP** for project-scoped database, development, and debugging workflows.
+1. **Hosted Indobase MCP** for authentication, account discovery, project selection, creation, database work, development, and debugging.
+2. **Platform HTTP API** only as a fallback when MCP account tools are unavailable for the current client.
 
 ## Defaults
 
-- Prefer a **project-scoped MCP URL**.
+- Prefer the hosted OAuth-backed MCP connection.
+- Start unscoped if the user may need to list or create projects.
+- Narrow to a **project-scoped MCP URL** after project selection when appropriate.
 - Prefer **read-only MCP** until the user explicitly asks for writes.
-- Use an **Indobase access token** in the `Authorization: Bearer ...` header.
 
-## Required env
+## Default hosted MCP URL
 
-- `INDOBASE_ACCESS_TOKEN`
-- `INDOBASE_MCP_URL`
+`https://mcp.indobase.in?features=account,database,development,debugging`
 
-Optional if you need to call platform REST endpoints directly:
+## Recommended project-scoped MCP URL
 
-- `INDOBASE_BASE_URL` (default `https://studio.indobase.in`)
-
-## Recommended MCP URL
-
-For an existing project:
-
-`https://studio.indobase.in/api/mcp?project_ref=<project-ref>&read_only=true&features=database,development,debugging`
+`https://mcp.indobase.in?project_ref=<project-ref>&read_only=true&features=database,development,debugging`
 
 Switch `read_only=true` to `false` only when the user wants migrations or other write operations.
 
-## HTTP API workflow
+## OAuth workflow
 
-When the user wants to create or select projects, use the platform API with the access token:
-
-- `GET /api/platform/organizations`
-- `GET /api/platform/projects`
-- `POST /api/platform/projects`
-- `GET /api/platform/projects/<ref>/api-keys`
-
-Base URL:
-
-`$INDOBASE_BASE_URL/api/platform/...`
+1. Ensure the `indobase` MCP server is installed in Cursor.
+2. If tools are unavailable due to auth, tell the user to authenticate the MCP server in **Tools & MCP**.
+3. After authentication, prefer MCP account tools to list organizations, list projects, and create projects.
+4. Once the target project is known, use project tools to inspect URLs, keys, schema, logs, and functions.
 
 ## Create-project checklist
 
-1. Confirm the target organization slug.
-2. Gather the new project name.
-3. Generate or ask for a database password.
-4. Create the project through `POST /api/platform/projects`.
-5. Build the project-scoped `INDOBASE_MCP_URL`.
-6. Use MCP to inspect project URL, publishable keys, logs, and schema.
+1. Confirm the MCP server is authenticated.
+2. List organizations or projects before guessing identifiers.
+3. Ask the user to choose an organization if needed.
+4. Create the project with MCP account tools when available.
+5. Narrow to the target project context.
+6. Inspect project URL, publishable keys, logs, and schema.
 7. Only then scaffold or modify the local app.
 
 ## Bootstrap checklist
@@ -64,3 +52,4 @@ After MCP is connected:
 2. Inspect tables or current schema before generating code.
 3. Create or update local env files only after confirming the app stack.
 4. Use MCP write tools only with explicit user approval.
+5. Fall back to the platform HTTP API only when MCP account tooling is not available in the current client.

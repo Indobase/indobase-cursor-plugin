@@ -1,8 +1,8 @@
 {
   "name": "indobase",
   "displayName": "Indobase",
-  "version": "0.1.0",
-  "description": "Connect Cursor to Indobase to create projects over HTTP and work inside a project through the Indobase MCP server.",
+  "version": "0.1.1",
+  "description": "Connect Cursor to Indobase through the hosted OAuth-backed MCP server to sign in, create projects, and build from the editor.",
   "author": {
     "name": "Indobase"
   },

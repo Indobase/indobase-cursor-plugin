@@ -1,11 +1,7 @@
 {
   "mcpServers": {
     "indobase": {
-      "type": "http",
-      "url": "${INDOBASE_MCP_URL}",
-      "headers": {
-        "Authorization": "Bearer ${INDOBASE_ACCESS_TOKEN}"
-      }
+      "url": "https://mcp.indobase.in?features=account,database,development,debugging"
     }
   }
 }

@@ -7,16 +7,15 @@ Help me connect this workspace to an existing Indobase project.
 
 Workflow:
 
-1. Ask for my Indobase project ref if it is not already known.
-2. Ask whether I want read-only or write access. Default to read-only.
-3. Tell me the exact env vars I need to set for Cursor:
-   - `INDOBASE_ACCESS_TOKEN`
-   - `INDOBASE_MCP_URL`
-4. Build the recommended MCP URL in this format:
-   `https://studio.indobase.in/api/mcp?project_ref=<project-ref>&read_only=<true|false>&features=database,development,debugging`
-5. After the MCP server is available, use Indobase MCP tools to:
+1. Check whether the hosted `indobase` MCP server is authenticated in Cursor.
+2. If not authenticated, guide me through the MCP OAuth sign-in flow first.
+3. Use MCP account tools to list my projects unless I already know the project ref.
+4. Ask whether I want read-only or write access. Default to read-only.
+5. Once the target project is known, switch to the recommended scoped MCP URL shape:
+   `https://mcp.indobase.in?project_ref=<project-ref>&read_only=<true|false>&features=database,development,debugging`
+6. After the MCP server is available, use Indobase MCP tools to:
    - inspect the project URL
    - fetch publishable keys
    - inspect tables or schema
    - check recent logs if relevant
-6. Keep the session read-only unless I explicitly ask for mutations.
+7. Keep the session read-only unless I explicitly ask for mutations.

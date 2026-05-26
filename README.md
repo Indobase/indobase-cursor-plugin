@@ -1,19 +1,20 @@
 # Indobase Cursor Plugin
 
-Cursor plugin for connecting Cursor to **Indobase**.
+Cursor plugin for connecting Cursor to **Indobase** with the hosted, OAuth-backed MCP server.
 
 It gives users:
 
-- a prewired **Indobase MCP server** entry
-- a focused **Indobase skill** for project creation and bootstrapping
-- reusable **commands** for connecting, creating, and building against Indobase projects
+- a prewired **Indobase MCP server** entry that is ready to authenticate in Cursor
+- a focused **Indobase skill** for sign-in, project selection, creation, and bootstrapping
+- reusable **commands** for authenticating, connecting, creating, and building against Indobase projects
 
 ## What it does
 
-This plugin uses two integration paths:
+This plugin is now **OAuth-first**:
 
-1. **Indobase MCP** for project-scoped database, development, and debugging work.
-2. **Indobase platform HTTP API** for listing organizations, creating projects, and fetching project-level details.
+1. It installs a hosted **Indobase MCP** connection.
+2. Cursor can authenticate the MCP server through the normal MCP login flow.
+3. After sign-in, the agent can list organizations, create projects, connect to existing projects, and use project tools from inside the editor.
 
 ## File tree
 
@@ -25,6 +26,7 @@ indobase-cursor-plugin/
   LICENSE
   CHANGELOG.md
   commands/
+    authenticate-indobase.md
     build-with-indobase.md
     connect-indobase-project.md
     create-indobase-project.md
@@ -32,40 +34,43 @@ indobase-cursor-plugin/
     indobase-project-builder/SKILL.md
 ```
 
-## Required env vars
+## Hosted setup
 
-Set these somewhere Cursor can read them:
+No token env vars are required for the default hosted experience.
 
-```bash
-export INDOBASE_ACCESS_TOKEN="..."
-export INDOBASE_MCP_URL="https://studio.indobase.in/api/mcp?project_ref=<project-ref>&read_only=true&features=database,development,debugging"
-```
-
-## Recommended setup
-
-1. Create an Indobase access token in your account settings.
-2. Start with a **project-scoped** MCP URL.
-3. Keep `read_only=true` until you actually want migrations or writes.
-4. Restart Cursor if the plugin or MCP server does not appear immediately.
-
-## Example MCP config
+The plugin ships with this MCP config:
 
 ```json
 {
   "mcpServers": {
     "indobase": {
-      "type": "http",
-      "url": "${INDOBASE_MCP_URL}",
-      "headers": {
-        "Authorization": "Bearer ${INDOBASE_ACCESS_TOKEN}"
-      }
+      "url": "https://mcp.indobase.in?features=account,database,development,debugging"
     }
   }
 }
 ```
 
+## Recommended setup
+
+1. Install the plugin.
+2. Restart Cursor if the MCP server does not appear immediately.
+3. Open **Settings > Cursor Settings > Tools & MCP**.
+4. Find the `indobase` server and authenticate when prompted.
+5. After sign-in, use the plugin commands or ask naturally to list or create projects.
+
+## Optional advanced override
+
+If you want a narrower, project-scoped MCP URL after initial sign-in, use:
+
+```text
+https://mcp.indobase.in?project_ref=<project-ref>&read_only=true&features=database,development,debugging
+```
+
+This is useful when you want to reduce tool scope after choosing a project.
+
 ## Commands
 
+- `Authenticate Indobase`
 - `Connect Indobase Project`
 - `Create Indobase Project`
 - `Build With Indobase`
@@ -84,6 +89,7 @@ export INDOBASE_MCP_URL="https://studio.indobase.in/api/mcp?project_ref=<project
 
 ## Notes
 
-- The MCP endpoint used by this plugin is `https://studio.indobase.in/api/mcp`.
-- Project creation currently goes through the platform HTTP API, then hands off to MCP for project-scoped work.
+- The default MCP endpoint used by this plugin is `https://mcp.indobase.in`.
+- The plugin is designed to authenticate through MCP/OAuth first, instead of requiring a manually created bearer token.
+- Project creation and discovery should prefer MCP account tools when available.
 - For safety, use non-production projects whenever possible.
