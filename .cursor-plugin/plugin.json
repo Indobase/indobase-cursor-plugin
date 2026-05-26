@@ -1,0 +1,28 @@
+{
+  "name": "indobase",
+  "displayName": "Indobase",
+  "version": "0.1.0",
+  "description": "Connect Cursor to Indobase to create projects over HTTP and work inside a project through the Indobase MCP server.",
+  "author": {
+    "name": "Indobase"
+  },
+  "homepage": "https://studio.indobase.in",
+  "repository": "https://github.com/Indobase/indobase-cursor-plugin.git",
+  "license": "MIT",
+  "keywords": [
+    "indobase",
+    "mcp",
+    "database",
+    "projects",
+    "cursor"
+  ],
+  "category": "developer-tools",
+  "tags": [
+    "mcp",
+    "build",
+    "backend"
+  ],
+  "skills": "./skills/",
+  "commands": "./commands/",
+  "mcpServers": "./.mcp.json"
+}
